@@ -16,8 +16,8 @@ const authSlice = createSlice({
         state.isLoggedin = true;
         state.error = null;
       })
-      .addCase(registration.rejected, ({ error }, { payload }) => {
-        error = payload;
+      .addCase(registration.rejected, (state, { payload }) => {
+        state.error = payload;
       })
       .addCase(LogIn.fulfilled, (state, { payload }) => {
         state.user = payload.user;
@@ -25,8 +25,8 @@ const authSlice = createSlice({
         state.isLoggedin = true;
         state.error = null;
       })
-      .addCase(LogIn.rejected, ({ error }, { payload }) => {
-        error = payload;
+      .addCase(LogIn.rejected, (state, { payload }) => {
+        state.error = payload;
       })
       .addCase(LogOut.fulfilled, state => {
         state.user = {
@@ -37,8 +37,8 @@ const authSlice = createSlice({
         state.isLoggedin = false;
       })
 
-      .addCase(refreshUser.pending, ({ isRefreshing }) => {
-        isRefreshing = true;
+      .addCase(refreshUser.pending, state => {
+        state.isRefreshing = true;
       })
       .addCase(refreshUser.fulfilled, (state, { payload }) => {
         state.user = payload;
