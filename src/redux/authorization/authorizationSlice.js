@@ -3,6 +3,14 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { registration, LogIn, LogOut, refreshUser } from './operations';
 import { initialState } from './initialState';
+import {
+  handleFulfilledRegistration,
+  handleRejectedRegistration,
+  handleLogOutUser,
+  handlePendingRefreshUser,
+  handleFulfilledRefreshUser,
+  handleRejectedRefreshUser,
+} from './actions';
 
 const authSlice = createSlice({
   name: 'auth',
@@ -10,46 +18,14 @@ const authSlice = createSlice({
 
   extraReducers: builder => {
     builder
-      .addCase(registration.fulfilled, (state, { payload }) => {
-        state.user = payload.user;
-        state.token = payload.token;
-        state.isLoggedin = true;
-        state.error = null;
-      })
-      .addCase(registration.rejected, (state, { payload }) => {
-        state.error = payload;
-      })
-      .addCase(LogIn.fulfilled, (state, { payload }) => {
-        state.user = payload.user;
-        state.token = payload.token;
-        state.isLoggedin = true;
-        state.error = null;
-      })
-      .addCase(LogIn.rejected, (state, { payload }) => {
-        state.error = payload;
-      })
-      .addCase(LogOut.fulfilled, state => {
-        state.user = {
-          name: null,
-          email: null,
-        };
-        state.token = null;
-        state.isLoggedin = false;
-      })
-
-      .addCase(refreshUser.pending, state => {
-        state.isRefreshing = true;
-      })
-      .addCase(refreshUser.fulfilled, (state, { payload }) => {
-        state.user = payload;
-        state.isLoggedin = true;
-        state.error = null;
-        state.isRefreshing = false;
-      })
-      .addCase(refreshUser.rejected, (state, { payload }) => {
-        state.error = payload;
-        state.isRefreshing = false;
-      });
+      .addCase(registration.fulfilled, handleFulfilledRegistration)
+      .addCase(registration.rejected, handleRejectedRegistration)
+      .addCase(LogIn.fulfilled, handleFulfilledRegistration)
+      .addCase(LogIn.rejected, handleRejectedRegistration)
+      .addCase(LogOut.fulfilled, handleLogOutUser)
+      .addCase(refreshUser.pending, handlePendingRefreshUser)
+      .addCase(refreshUser.fulfilled, handleFulfilledRefreshUser)
+      .addCase(refreshUser.rejected, handleRejectedRefreshUser);
   },
 });
 
